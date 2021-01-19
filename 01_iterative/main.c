@@ -14,7 +14,13 @@
 #include <signal.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#include <sys/sendfile.h>
+
+// #include <sys/sendfile.h>
+// MacOS
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
+
 #include <time.h>
 #include <locale.h>
 
@@ -406,7 +412,7 @@ void transfer_file_contents(char *file_path, int client_socket, off_t file_size)
     int fd;
 
     fd = open(file_path, O_RDONLY);
-    sendfile(client_socket, fd, NULL, file_size);
+    sendfile(fd, client_socket, 0, &file_size, NULL, 0);
     close(fd);
 }
 
